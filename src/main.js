@@ -11,7 +11,7 @@ const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
 
 bot.use(session());
 
-let INITIAL_SESSION = {
+const INITIAL_SESSION = {
   messages: [],
 };
 
@@ -30,11 +30,10 @@ bot.command("start", async (ctx) => {
 });
 
 bot.command("restart", async (ctx) => {
-  INITIAL_SESSION = {
-    messages: [],
-  };
+  INITIAL_SESSION.messages = [];
+  ctx.session = INITIAL_SESSION;
   // Ваш код здесь
-  await ctx.reply("Bot has been restarted");
+  await ctx.reply("Ответы все сброшены");
 });
 
 bot.on(message("voice"), async (ctx) => {

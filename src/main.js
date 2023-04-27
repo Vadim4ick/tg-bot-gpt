@@ -11,7 +11,7 @@ const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
 
 bot.use(session());
 
-const INITIAL_SESSION = {
+let INITIAL_SESSION = {
   messages: [],
 };
 
@@ -30,7 +30,9 @@ bot.command("start", async (ctx) => {
 });
 
 bot.command("restart", async (ctx) => {
-  ctx.deleteMessage(ctx.message.message_id - 1);
+  INITIAL_SESSION = {
+    messages: [],
+  };
   // Ваш код здесь
   await ctx.reply("Bot has been restarted");
 });
@@ -75,15 +77,6 @@ bot.on(message("text"), async (ctx) => {
       content: ctx.message.text,
     });
     const res = await openAi.chat(ctx.session.messages);
-
-    const updatedMessageText = "Привет, я обновил сообщение";
-    // обновляем сообщение
-    ctx.telegram.editMessageText(
-      ctx.chat.id,
-      messageId,
-      null,
-      updatedMessageText
-    );
 
     ctx.session.messages.push({
       role: openAi.roles.ASSISTANT,

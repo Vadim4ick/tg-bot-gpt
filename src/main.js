@@ -29,6 +29,12 @@ bot.command("start", async (ctx) => {
   );
 });
 
+bot.command("restart", async (ctx) => {
+  ctx.deleteMessage(ctx.message.message_id - 1);
+  // Ваш код здесь
+  await ctx.reply("Bot has been restarted");
+});
+
 bot.on(message("voice"), async (ctx) => {
   ctx.session ??= INITIAL_SESSION;
 
@@ -69,6 +75,15 @@ bot.on(message("text"), async (ctx) => {
       content: ctx.message.text,
     });
     const res = await openAi.chat(ctx.session.messages);
+
+    const updatedMessageText = "Привет, я обновил сообщение";
+    // обновляем сообщение
+    ctx.telegram.editMessageText(
+      ctx.chat.id,
+      messageId,
+      null,
+      updatedMessageText
+    );
 
     ctx.session.messages.push({
       role: openAi.roles.ASSISTANT,
